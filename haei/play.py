@@ -2,7 +2,7 @@ import pyaudio
 import wave
 import sys
 
-chk = 1024
+chk = 2084
 
 if len(sys.argv) < 2:
   print("plays a wave file. \n\n usage: %s filename.wav" % sys.argv[0])
