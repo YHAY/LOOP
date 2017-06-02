@@ -3,4 +3,4 @@ if you cant play the music O.wav, you should change the chunk. i first set the c
 chunk 1024 -> 2048
 
 vi /home/users/.asoundrc
-. asoundrc파일작성
+. asoundrc파일작성있어야 라즈베리파이에서USB 마이크로 작동합니다.
