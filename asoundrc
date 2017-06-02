@@ -1,0 +1,20 @@
+pcm.!default {                         # declare the default PCM device
+    type asym                      # combine playback and capture devices
+    playback.pcm {                 ### Playback object ###
+         type plug              # convert audio to mixer format
+         slave.pcm {
+                 type hw        # define the playback hardware
+                 card 0         # playback card name
+                 device 0       # playback device on that card
+        }
+    }
+
+    capture.pcm {                   ### Capture object ###
+        type plug               # convert audio format from the hardware
+        slave.pcm {
+                 type hw        # define the capture hardware
+                 card 1         # capture card name
+                 device 0       # capture device on that card
+        }
+    }
+}
