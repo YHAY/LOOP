@@ -1,18 +1,15 @@
 import pyaudio
 import wave
 import pygame
-import RPi.GPIO as GPIO
 import time
 
 CHK = 2**12
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
-RECORD_SECONDS = 5
-sound1 = "rctest1.wav"
-sound2 = "rctest2.wav"
+RECORD_SECONDS = 3
+
 count = 0;
-chnnel=[]
 
 p = pyaudio.PyAudio()
 
@@ -23,8 +20,9 @@ while True:
     if count >= 1:
       print ("play")
       pygame.mixer.init()
-      chnnel[count] = pygame.mixer.find_channel()
-      chnnel[count].play(s,-1)  
+      sound = "rctest"+str(count)+".wav"
+      channel = pygame.mixer.find_channel()
+      channel.play(pygame.mixer.Sound(sound),-1)
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -39,26 +37,19 @@ while True:
                   data = stream.read(CHK)
                   frames.append(data)
                 print("* done recording")
+                
                 count +=1
   
-                if(count == 1) :
-                      wf = wave.open(sound1,'wb')
+                if(count >= 1) :
+                      wf = wave.open("rctest"+str(count)+".wav",'wb')
                       wf.setnchannels(CHANNELS)
                       wf.setsampwidth(p.get_sample_size(FORMAT))
                       wf.setframerate(RATE)
                       wf.writeframes(b''.join(frames))
                       wf.close()
-                    
-                elif(count == 2) :
-                      wf = wave.open(sound2,'wb')
-                      wf.setnchannels(CHANNELS)
-                      wf.setsampwidth(p.get_sample_size(FORMAT))
-                      wf.setframerate(RATE)
-                      wf.writeframes(b''.join(frames))
-                      wf.close()
-
+                     
+            
             if event.key == pygame.K_q:
                print ("stop"+count+"music") 
                chnnel[count].stop();
                count -= 1;
-      
