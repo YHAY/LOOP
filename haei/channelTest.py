@@ -17,9 +17,10 @@ RATE = 44100
 RECORD_SECONDS = 5
 WAVE_OUTPUT_FILENAME = "outputs.wav"
 NEW_WAVE_OUTPUT_FILENAME = "new_outputs.wav"
-path1 = '/home/haei/Music/haei/output1.wav'
-path2 = '/home/haei/Music/haei/output2.wav'
-path3 = '/home/haei/Music/haei/output3.wav'
+
+path1 = '/home/pi/LOOP/LOOP/haei/output1.wav'
+path2 = '/home/pi/LOOP/LOOP/haei/output2.wav'
+path3 = '/home/pi/LOOP/LOOP/haei/output3.wav'
 
 s = pygame.mixer.Sound("test2.wav")
 s2 = pygame.mixer.Sound("test1.wav")
@@ -67,15 +68,6 @@ while True:
                 data2 = wf2.readframes(chk)
                 data3 = wf3.readframes(chk)
                 data4 = wf4.readframes(chk)                		
-                df2 = wf2.getframerate()
-                df3 = wf3.getframerate()
-                df4 = wf4.getframerate()
-                cf2 = wf2.getnchannels()
-                cf3 = wf3.getnchannels()
-                cf4 = wf4.getnchannels()
-                sf2 = wf2.getsampwidth()
-                sf3 = wf3.getsampwidth()
-                sf4 = wf4.getsampwidth()
 
                 print len(data2), len(data3), len(data4)
                 print df2, df3, df4
@@ -97,9 +89,8 @@ while True:
                       print len(d2), len(d3), len(d4)
                       data = (d2 * 0.333 + d3 * 0.333 + d4 * 0.333).astype(np.int16)
                       out_stream.write(data)
-                      frames.append(data)
-#                      frames.append(data3)
-#                      frames.append(data4)
+                      
+                      frames.append(data.tostring())
 
                 print 'all recording done'
 		wf = wave.open(NEW_WAVE_OUTPUT_FILENAME, 'wb')
