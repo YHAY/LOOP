@@ -18,7 +18,8 @@ while True:
 	if count == 1:
  		print "play"
 		count = 0
-
+		time.sleep(0.8)
+	
 	elif count ==2 :
 		print "delete"
 		count = 0
