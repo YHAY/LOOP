@@ -1,4 +1,4 @@
-# -*- coding: cp949 -*-
+
 import pygame
 import sys
 import time
@@ -16,7 +16,7 @@ RATE = 44100
 RECORD_SECONDS = 5
 
 count = 0;
-savecnt = 0;
+savecnt = 1;
 volume = 1;
 deletecnt = 0
 
@@ -79,6 +79,7 @@ def back():
     global channel
     global count
     global RECORD_FILENAME
+
     channel.stop()
     
     count -= 1
@@ -132,83 +133,86 @@ def save():
     global RECORD_SECONDS 
 
     pygame.mixer.stop()
+
+    while True:
     
-    if savecnt == 0:
+        if savecnt == 1:
 
-        wf1 = wave.open(path+"record"+str(0)+".wav",'rb')
-        wf2 = wave.open(path+"record"+str(1)+".wav",'rb')
-        
-        out_stream = p.open(format = p.get_format_from_width(wf2.getsampwidth()), channels = wf2.getnchannels(), rate = wf2.getframerate(), output = True)
-        frames = []
-        data1 = wf1.readframes(chk)
-        data2 = wf2.readframes(chk)
+            wf1 = wave.open(path+"record"+str(0)+".wav",'rb')
+            wf2 = wave.open(path+"record"+str(1)+".wav",'rb')
+            
+            out_stream = p.open(format = p.get_format_from_width(wf2.getsampwidth()), channels = wf2.getnchannels(), rate = wf2.getframerate(), output = True)
+            frames = []
+            data1 = wf1.readframes(chk)
+            data2 = wf2.readframes(chk)
 
-        while data1 != '' :
-            if data2 != '':
-                out_stream.write(data1)
-                out_stream.write(data2)
-                
-                data1 = wf1.readframes(chk)
-                data2 = wf2.readframes(chk)
-        
-                d1 = np.fromstring(data1, np.int16)
-                d2 = np.fromstring(data2, np.int16)
-
-                data = (d1 * 0.333 + d2 * 0.333).astype(np.int16)
-                out_stream.write(data)
-                          
-                frames.append(data.tostring())
-                
-        print 'all recording done'
-
-        wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
-        wf.close()
-        out_stream.stop_stream()
-        out_stream.close()
-                
-        savecnt += 1
-
-        if savecnt > 0:
-             while savecnt == count:
-                wf1 = wave.open(path+"record"+str(savecnt)+".wav",'rb')
-                wf2 = wave.open(path+WAVE_OUTPUT_FILENAME,'rb')
-
-                data1 = wf1.readframes(chk)
-                data2 = wf2.readframes(chk)
-                
-                while data1 != '' :
-                    if data2 != '':
-                        out_stream.write(data1)
-                        out_stream.write(data2)
-                        
-                        data1 = wf1.readframes(chk)
-                        data2 = wf2.readframes(chk)
-                
-                        d1 = np.fromstring(data1, np.int16)
-                        d2 = np.fromstring(data2, np.int16)
-
-                        data = (d1 * 0.333 + d2 * 0.333).astype(np.int16)
-                        out_stream.write(data)
-                                  
-                        frames.append(data.tostring())
-                        
-                        print 'all recording done'
-                        wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-                        wf.setnchannels(CHANNELS)
-                        wf.setsampwidth(p.get_sample_size(FORMAT))
-                        wf.setframerate(RATE)
-                        wf.writeframes(b''.join(frames))
-                        wf.close()
-                        
-                        out_stream.stop_stream()
-                        out_stream.close()
+            while data1 != '' :
+                if data2 != '':
+                    out_stream.write(data1)
+                    out_stream.write(data2)
                     
-             savecnt += 1
+                    data1 = wf1.readframes(chk)
+                    data2 = wf2.readframes(chk)
+            
+                    d1 = np.fromstring(data1, np.int16)
+                    d2 = np.fromstring(data2, np.int16)
 
+                    data = (d1 * 0.333 + d2 * 0.333).astype(np.int16)
+                    out_stream.write(data)
+                              
+                    frames.append(data.tostring())
+                    
+            print 'all recording done'
+
+            wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+            wf.setnchannels(CHANNELS)
+            wf.setsampwidth(p.get_sample_size(FORMAT))
+            wf.setframerate(RATE)
+            wf.writeframes(b''.join(frames))
+            wf.close()
+         #   out_stream.stop_stream()
+         #   out_stream.close()
+                    
+            savecnt += 1
+
+            if savecnt >1:
+                    wf1 = wave.open(path+"record"+str(savecnt)+".wav",'rb')
+                    wf2 = wave.open(path+WAVE_OUTPUT_FILENAME,'rb')
+
+                    data1 = wf1.readframes(chk)
+                    data2 = wf2.readframes(chk)
+                    
+                    while data1 != '' :
+                        if data2 != '':
+                            out_stream.write(data1)
+                            out_stream.write(data2)
+                            
+                            data1 = wf1.readframes(chk)
+                            data2 = wf2.readframes(chk)
+                    
+                            d1 = np.fromstring(data1, np.int16)
+                            d2 = np.fromstring(data2, np.int16)
+
+                            data = (d1 * 0.333 + d2 * 0.333).astype(np.int16)
+                            out_stream.write(data)
+                                      
+                            frames.append(data.tostring())
+                            
+                            print 'all recording done'
+                            wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+                            wf.setnchannels(CHANNELS)
+                            wf.setsampwidth(p.get_sample_size(FORMAT))
+                            wf.setframerate(RATE)
+                            wf.writeframes(b''.join(frames))
+                            wf.close()
+                            
+                          #  out_stream.stop_stream()
+                          #  out_stream.close()
+                        
+                    savecnt += 1
+            if savecnt>count:
+                out_stream.close()
+                break
   #  delete()     
              
     
