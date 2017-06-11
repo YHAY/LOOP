@@ -83,7 +83,7 @@ def back():
     global RECORD_FILENAME
 
     pygame.mixer.stop()
-    channel = pygame.mixer.find_channel()
+
 
     count -= 1
     print RECORD_FILENAME + "is back"
@@ -104,10 +104,11 @@ def back():
          print "file name ["+f+"]"#show the remain lists
     
     for j in range(0,count):
+      channel = pygame.mixer.find_channel()
       RECORD_FILENAME = "record"+str(j)+".wav"
       print "current:"+RECORD_FILENAME
       fname=RECORD_FILENAME
-      channel.play(pygame.mixer.Sound(RECORD_FILENAME),-1)
+      channel.play(pygame.mixer.Sound(fname), -1)
 
 
 def save():
@@ -306,19 +307,40 @@ def delete():
 def volume_up():
     global volume
     global channel
-    volume = (volume + 0.1)
-    channel.set_volume(volume)
-    c=channel.get_volume()
-    print 'set sound',  c,volume
+    pygame.mixer.stop()
+
+    for j in range(0,count):
+      channel = pygame.mixer.find_channel()
+      RECORD_FILENAME = "record"+str(j)+".wav"
+      print "current:"+RECORD_FILENAME
+      fname=RECORD_FILENAME
+      channel.play(pygame.mixer.Sound(RECORD_FILENAME),-1)
+      volume = (volume + 0.1)
+      channel.set_volume(volume)
+      c=channel.get_volume()
+      print 'set sound',  c,volume
+
+
 
 ################################################
 def volume_down():
     global volume
     global channel
-    volume = (volume - 0.1)
-    channel.set_volume(volume)
-    a=channel.get_volume()
-    print 'set sound', a,volume
+    pygame.mixer.stop()
+
+
+
+    for j in range(0,count):
+      channel = pygame.mixer.find_channel()
+      RECORD_FILENAME = "record"+str(j)+".wav"
+      print "current:"+RECORD_FILENAME
+      fname=RECORD_FILENAME
+      volume = (volume - 0.1)
+      channel.set_volume(volume)
+
+      channel.play(pygame.mixer.Sound(RECORD_FILENAME),-1)
+      a=channel.get_volume()
+      print 'set sound', a,volume
 
 
 while True:
