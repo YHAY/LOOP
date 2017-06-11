@@ -79,7 +79,7 @@ def record():
 
     
 def mixer():
-
+    
     pygame.mixer.init()
     channel = pygame.mixer.find_channel()
     channel.play(pygame.mixer.Sound(RECORD_FILENAME),-1)
@@ -124,15 +124,15 @@ def delete():
     lcds()
     global count
     if (count >-1):
-      print 'All deleting'
-      pygame.mixer.stop()
-      os.chdir(path)#go to the path
-      files = glob.glob("record*") #find the file start with "record"
-      for i in files: #  files : [record.py, record0.py...]
+        print 'All deleting'
+        pygame.mixer.stop()
+        os.chdir(path)#go to the path
+        files = glob.glob("record*") #find the file start with "record"
+        for i in files: #  files : [record.py, record0.py...]
               print "!!!"
               os.remove(i)
               print "file name ["+i+"]"#show the remain lists : empty= success
-      count=0
+        count=0
 
 def save():
     print("click")
@@ -384,7 +384,7 @@ try:
             record()
             sleep(1)  
         if GPIO.event_detected(del_pin):
-            #delete()
+            delete()
             sleep(1) 
         if GPIO.event_detected(back_pin):
             back()
