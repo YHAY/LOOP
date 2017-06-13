@@ -15,7 +15,7 @@ CHK =  2**12
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
-RECORD_SECONDS = 10
+RECORD_SECONDS = 3
 
 #PIN LIST
 vol_up = 13
@@ -43,7 +43,6 @@ channel = pygame.mixer.find_channel()
 
 
 def record():
-    lcds()
     global count
     global RECORD_FILENAME
     global WAVE_OUTPUT_FILENAME
@@ -73,13 +72,14 @@ def record():
     wf.close()
     mixer()
     print"current:"+ RECORD_FILENAME
+    lcds()
     count +=1
     RECORD_FILENAME = "record"+str(count)+".wav"
     print "next:"+RECORD_FILENAME
 
     
 def mixer():
-    
+
     pygame.mixer.init()
     channel = pygame.mixer.find_channel()
     channel.play(pygame.mixer.Sound(RECORD_FILENAME),-1)
@@ -87,7 +87,7 @@ def mixer():
     
     
 def back():
-    lcds()
+
     global channel
     global count
     global RECORD_FILENAME
@@ -96,44 +96,42 @@ def back():
 
 
     count -= 1
-    print RECORD_FILENAME + "is back"
-    
+    print RECORD_FILENAME + "is back"    
     if(count<0):
         count=0
+    lcds()  
     RECORD_FILENAME = "record"+str(count)+".wav"
     print "current:"+RECORD_FILENAME
     fname=RECORD_FILENAME
 
     files = glob.glob("*")
     os.chdir(path)
-
-    for f in files:
-        if f ==fname:
-         print "!!!"
-         os.remove(fname)
-         print "file name ["+f+"]"#show the remain lists
     
     for j in range(0,count):
       channel = pygame.mixer.find_channel()
       RECORD_FILENAME = "record"+str(j)+".wav"
       print "current:"+RECORD_FILENAME
-      fname=RECORD_FILENAME
-      channel.play(pygame.mixer.Sound(fname), -1)
-      
+   #   fname=RECORD_FILENAME
+      channel.play(pygame.mixer.Sound(RECORD_FILENAME), -1)
+
+
+    
 def delete():
-    lcds()
+
     global count
     if (count >-1):
-        print 'All deleting'
-        pygame.mixer.stop()
-        os.chdir(path)#go to the path
-        files = glob.glob("record*") #find the file start with "record"
-        for i in files: #  files : [record.py, record0.py...]
+      print 'All deleting'
+      pygame.mixer.stop()
+      os.chdir(path)#go to the path
+      files = glob.glob("record*") #find the file start with "record"
+      for i in files: #  files : [record.py, record0.py...]
               print "!!!"
               os.remove(i)
               print "file name ["+i+"]"#show the remain lists : empty= success
-        count=0
+      count=0
+    lcds()
 
+    
 def save():
     print("click")
     global count
@@ -370,6 +368,7 @@ GPIO.setup(del_pin, GPIO.IN)
 GPIO.add_event_detect(del_pin, GPIO.FALLING,bouncetime=300)
 
 def lcds():
+        global count
         lcd = Adafruit_CharLCD(rs=22, en=11, d4=23, d5=10, d6=9, d7=25, cols=16, lines=2)
         lcd.clear()
         lcd.message(str(count) + 'st Recording')
