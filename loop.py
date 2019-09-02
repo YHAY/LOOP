@@ -60,10 +60,10 @@ def record():
     wf.writeframes(b''.join(frames))
     wf.close()
     mixer()
-    print"current:"+ RECORD_FILENAME
+    print("current:"+ RECORD_FILENAME)
     count +=1
     RECORD_FILENAME = "record"+str(count)+".wav"
-    print "next:"+RECORD_FILENAME
+    print ("next:"+RECORD_FILENAME)
 
     
 def mixer():
@@ -82,12 +82,12 @@ def back():
     channel.stop()
     
     count -= 1
-    print RECORD_FILENAME + "is back"
+    print (RECORD_FILENAME + "is back")
     
     if(count<0):
         count=0
     RECORD_FILENAME = "record"+str(count)+".wav"  
-    print "current:"+RECORD_FILENAME
+    print ("current:"+RECORD_FILENAME)
     fname=RECORD_FILENAME
 
     files = glob.glob("*")
@@ -95,9 +95,9 @@ def back():
 
     for f in files:
         if f ==fname:
-           print "!!!"
+           print ("!!!")
            os.remove(fname)
-           print "file name ["+f+"]"#show the remain lists   
+           print ("file name ["+f+"]")#show the remain lists
 '''
 def delete():
 
@@ -159,7 +159,7 @@ def save():
                           
                 frames.append(data.tostring())
                 
-        print 'all recording done'
+        print ('all recording done')
 
         wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
         wf.setnchannels(CHANNELS)
