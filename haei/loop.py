@@ -7,6 +7,8 @@ import wave
 import numpy as np
 import glob
 import os
+from pathlib import Path
+
 
 CHK = 2048
 FORMAT = pyaudio.paInt16
@@ -14,19 +16,30 @@ CHANNELS = 2
 RATE = 44100
 RECORD_SECONDS = 5
 
+'''
+Todos,
+1. music saved path automatically.(ok)
+2. attach comment(ok)
+3. remove print(ok) error control(ok)
+4. write how to play this program.
+5. clean the github. (divide it as PC/Raspberry)
+6. move it to raspberry. and test it. (with hw)
+'''
+
 class loop():
     def __init__(self):
-
         self.count = 0;
         self.volume = 1;
         self.save_waves = {}
         self.out_stream = {}
-        self.WAVE_OUTPUT_FILENAME = "output2.wav"
+        self.WAVE_OUTPUT_FILENAME = "result.wav"
         self.RECORD_FILENAME = "record" + str(self.count) + ".wav"
-        #path = '/home/haei/Music/'
-        self.save_path = '/home/h/PycharmProjects/LOOP/LOOP/haei/'
+        home = str(Path.home())
+        self.save_path = home + '/Music/'
         self.channel = pygame.mixer.find_channel()
+        pygame.init()
 
+    ''' Record a sound'''
     def record(self):
         global CHK
         global FORMAT
@@ -35,8 +48,6 @@ class loop():
         global RECORD_SECONDS
         p = pyaudio.PyAudio()
         if(self.count <5):
-          print(self.count ,"* recording")
-
           in_stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHK)
           frames = []
 
@@ -44,36 +55,32 @@ class loop():
             data = in_stream.read(CHK)
             frames.append(data)
 
-          print("* done recording")
-
-          wf = wave.open(self.RECORD_FILENAME, 'wb')
+          wf = wave.open(self.save_path+self.RECORD_FILENAME, 'wb')
           wf.setnchannels(CHANNELS)
           wf.setsampwidth(p.get_sample_size(FORMAT))
           wf.setframerate(RATE)
           wf.writeframes(b''.join(frames))
           wf.close()
           self.mixer()
-          print("current:"+ self.RECORD_FILENAME)
           self.count +=1
           self.RECORD_FILENAME = "record"+str(self.count)+".wav"
-          print ("next:"+ self.RECORD_FILENAME)
         else:
-          print ("out of range! you can't record anymore. please save or restart all")
+          raise ("out of save range! you can't record anymore. please save or restart all")
 
+    ''' Keep play the sound that you record. It used in Record() function.'''
     def mixer(self):
         pygame.mixer.init()
         self.channel = pygame.mixer.find_channel()
-        self.channel.play(pygame.mixer.Sound(self.RECORD_FILENAME),-1)
+        self.channel.play(pygame.mixer.Sound(self.save_path + self.RECORD_FILENAME),-1)
 
+    ''' Remove '''
     def back(self):
         self.channel.stop()
         self.count -= 1
-        print (self.RECORD_FILENAME + " is back")
 
         if(self.count<0):
             self.count=0
         self.RECORD_FILENAME = "record"+str(self.count)+".wav"
-        print ("current:"+self.RECORD_FILENAME)
         fname=self.RECORD_FILENAME
 
         files = glob.glob("*")
@@ -81,10 +88,9 @@ class loop():
 
         for f in files:
             if f ==fname:
-               print ("!!!")
                os.remove(fname)
-               print ("file name ["+f+"]")#show the remain lists
 
+    ''' Save a music with Combine '''
     def save(self):
         global CHK
         global FORMAT
@@ -102,48 +108,28 @@ class loop():
 
         for i in range(0, self.count):
             wave_Files.append(wave.open("record" + str(i) + ".wav", 'rb'))
-        # wf1 = wave.open(path+"record"+str(0)+".wav",'rb')
-        # wf2 = wave.open(path+"record"+str(1)+".wav",'rb')#######
-
-        # out_stream = p.open(format = p.get_format_from_width(wf2.getsampwidth()), channels = wf2.getnchannels(), rate = wf2.getframerate(), output = True)
         out_stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True, frames_per_buffer=CHK)
 
         for i in range(0, self.count):
             read_data.append(wave_Files[i].readframes(CHK))
-        # data1 = wf1.readframes(chk)#######
-        # data2 = wf2.readframes(chk)#######
 
         while (list([i for i in range(0, self.count) if read_data[i] != b''])):
-        #while ((read_data[0] != b'') & (read_data[1] != b'')):
-            # ((read_data[r_data] for r_data in range(0, count)) != b''):
-            # print("r_data :", r_data)
-            # ((read_data[] != b'') & (data2 != b'')):
             for i in range(0, self.count):
-                out_stream.write(read_data[i])  ##########
-                # out_stream.write(data2)##########
+                out_stream.write(read_data[i])
             for i in range(0, self.count):
                 read_data[i] = wave_Files[i].readframes(CHK)
-                # data1 = wf1.readframes(chk)#######
-                # data2 = wf2.readframes(chk)##########
             for i in range(0, self.count):
                 data_to_int.append(np.fromstring(read_data[i], np.int16))
-                # d1 = np.fromstring(data1, np.int16)###########
-                # d2 = np.fromstring(data2, np.int16)#############
-
-                # data = (d1 * 0.333 + d2 * 0.333).astype(np.int16)############3
             data_sum = 0.0
             for j in range(0, self.count):
                 data_sum += data_to_int[j] * (1 / self.count)
 
             data = data_sum.astype(np.int16)
-            out_stream.write(data)  ###########
-            print("data:", data)
-            frames.append(data.tostring())  ###########33
+            out_stream.write(data)
+            frames.append(data.tostring())
             data_to_int.clear()
 
-        print('all recording done')
-
-        wf = wave.open(self.WAVE_OUTPUT_FILENAME, 'wb')
+        wf = wave.open(self.save_path + self.WAVE_OUTPUT_FILENAME, 'wb')
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(p.get_sample_size(FORMAT))
         wf.setframerate(RATE)
@@ -152,34 +138,33 @@ class loop():
         out_stream.stop_stream()
         out_stream.close()
 
+    ''' delete all files , start with "record" '''
     def delete(self):
         if (self.count >-1):
-          print ('All deleting')
           pygame.mixer.stop()
-          os.chdir(self.save_path)#go to the path
-          files = glob.glob("record*") #find the file start with "record"
-          for i in files: #  files : [record.py, record0.py...]
-                  print ("!!!")
+          os.chdir(self.save_path)
+          files = glob.glob("record*")
+          for i in files:
                   os.remove(i)
-                  print ("file name ["+i+"]")#show the remain lists : empty= success
 
     def volume_up(self):
         self.volume = (self.volume + 0.1)
         self.channel.set_volume(self.volume)
         c=self.channel.get_volume()
-        print ('set sound',  c, self.volume)
 
     def volume_down(self):
         self.volume = (self.volume - 0.1)
         self.channel.set_volume(self.volume)
         a=self.channel.get_volume()
-        print ('set sound', a, self.volume)
 
 if __name__ == "__main__":
+    #create a square to get key input
     pygame.init()
     size = (200, 200)
     screen = pygame.display.set_mode(size)
-    user_loop = loop()
+
+    user_loop = loop()  # create class.
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
