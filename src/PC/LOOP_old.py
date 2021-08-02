@@ -28,7 +28,7 @@ screen = pygame.display.set_mode(size)
 
 WAVE_OUTPUT_FILENAME = "output.wav"
 RECORD_FILENAME = "record"+str(count)+".wav"
-path = '/home/haei/Music/haei/'
+path = '/home/haei/sound/haei/'
 channel = pygame.mixer.find_channel()
 
 
@@ -72,7 +72,6 @@ def mixer():
     channel = pygame.mixer.find_channel()
     channel.play(pygame.mixer.Sound(RECORD_FILENAME),-1)
 
-    
     
 def back():
 
@@ -240,11 +239,8 @@ def volume_down():
 
 
 while True:
-
-
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
-
             if event.key == pygame.K_z:
                 record()          
             if event.key == pygame.K_x:
@@ -257,7 +253,6 @@ while True:
                 volume_down()
             if event.key == pygame.K_a:
                 save()
-       
                
 
 
