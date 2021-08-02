@@ -1,7 +1,11 @@
-import RPi.GPIO as GPIO
-import time
-import pyaudio
+import os
+import glob
 import wave
+import pygame
+import pyaudio
+import numpy as np
+import RPi.GPIO as GPIO
+
 
 CHK = 1024
 chk = 1024
@@ -11,7 +15,7 @@ RATE = 44100
 RECORD_SECONDS = 5
 
 #naming rules : "outputs"+"count"+".py"
-todir="/home/pi/Music/"
+todir="/home/pi/sound/"
 WAVE_OUTPUT_FILENAME = "outputs.wav"
 NEW_WAVE_OUTPUT_FILENAME = "new_outputs.wav"
 
@@ -55,7 +59,7 @@ GPIO.add_event_detect(back_pin, GPIO.FALLING)
 GPIO.setup(del_pin, GPIO.IN)
 GPIO.add_event_detect(del_pin, GPIO.FALLING)
 
-print 'Press the button!'
+print('Press the button!')
 frames = []
 try:
   while True:
@@ -66,7 +70,7 @@ try:
             data = stream.read(CHK)
             frames.append(data)
 
-        if(count !=0):
+        if count !=0:
             wf2 = wave.open((todir+NEW_WAVE_OUTPUT_FILENAME), 'rb')
             out_stream = p.open(format = p.get_format_from_width(wf2.getsampwidth()), channels = wf2.getnchannels(), rate = wf2.getframerate(), output = True)
             data2 = wf2.readframes(chk)
@@ -77,7 +81,7 @@ try:
                  #data = (d2 * 0.333 + d3 * 0.333 + d4 * 0.333).astype(np.int16)
                  out_stream.write(data)
                  frames.append(data.tostring())
-        print 'all recording done'
+        print ('all recording done')
         wf = wave.open(NEW_WAVE_OUTPUT_FILENAME, 'wb')
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(p.get_sample_size(FORMAT))
@@ -92,22 +96,22 @@ try:
         os.chdir(todir)
         for f in files:
           if f ==fname:
-            print "!!!"
+            print ("!!!")
             os.remove(fname)
-          print "file name ["+f+"]"#show the remain lists
-          break;
+          print ("file name ["+f+"]")#show the remain lists
+          break
 
     if GPIO.event_detected(back_pin):
-        print 'back_pin pressed'
+        print ('back_pin pressed')
         break
     if GPIO.event_detected(save_pin):
-        print 'save_pin pressed'
+        print ('save_pin pressed')
         break
     if GPIO.event_detected(vol_up):
-        print 'vol_up pressed'
+        print ('vol_up pressed')
         break
     if GPIO.event_detected(vol_down):
-        print 'vol_down pressed'
+        print ('vol_down pressed')
         break
 
 except KeyboardInterrupt:

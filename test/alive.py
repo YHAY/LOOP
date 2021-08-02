@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import time
+# import time
 import pyaudio
 import wave
 
@@ -21,7 +21,7 @@ GPIO.add_event_detect(23, GPIO.FALLING)
 GPIO.setup(27, GPIO.IN)
 GPIO.add_event_detect(27, GPIO.FALLING)
 
-print 'Press the button!'
+print('Press the button!')
 frames = []
 try:
   while True:
@@ -40,7 +40,7 @@ try:
         wf.close()
         break
     if GPIO.event_detected(23):
-        
+        print('23 detected!')
 
 except KeyboardInterrupt:
     GPIO.cleanup()

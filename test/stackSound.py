@@ -15,15 +15,15 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
 RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "outputs.wav"
-NEW_WAVE_OUTPUT_FILENAME = "new_outputs.wav"
+WAVE_OUTPUT_FILENAME = "../sound/outputs.wav"
+NEW_WAVE_OUTPUT_FILENAME = "../sound/new_outputs.wav"
 
 path1 = '/home/pi/LOOP/LOOP/haei/output1.wav'
 path2 = '/home/pi/LOOP/LOOP/haei/output2.wav'
 path3 = '/home/pi/LOOP/LOOP/haei/output3.wav'
 
-s = pygame.mixer.Sound("test2.wav")
-s2 = pygame.mixer.Sound("test1.wav")
+s = pygame.mixer.Sound("warning.wav")
+s2 = pygame.mixer.Sound("fanfare.wav")
 
 p = pyaudio.PyAudio()
 
